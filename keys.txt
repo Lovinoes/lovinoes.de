@@ -4,5 +4,5 @@
 # _  / / /_/ /_ |/ /_  / _  / / / /_/ /  __/(__  )__/ /_/ / /  __/
 # /_/  \____/_____/ /_/  /_/ /_/\____/\___//____/_(_)__,_/  \___/
 
-# [Desktop]
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPsDr4Ls2okgx63qnnzdox3EW0VLdMCzjJyaI0Dyuvod lovinoes@Matisse
+# [Matisse]
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIJKsQc6nVk9eI2thes4s4VKbmnwZ20crlaikia+KXyp lovinoes@Matisse
