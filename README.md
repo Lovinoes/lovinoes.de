@@ -1,4 +1,5 @@
-![grafik](https://github.com/Lovinoes/lovinoes.de/assets/104237836/1bc558a7-9e59-4310-ad74-5b2825cf8978)
+![image](https://github.com/user-attachments/assets/ff103e2f-a7d4-49ab-8a88-c261ccdee34d)
+
 
 
 <br>
