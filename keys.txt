@@ -1,11 +1,35 @@
-# [laptop] nexus
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCWcicy7f5VASzaZs5zuTU4bSphzYF1RKD8a+Snqi54dloZAAR3XENW83+j3AEbbQ/Xamdkvc1leF6zZgUlNT+yhmaQpQAwL3jd8gSMgizPFv0t8j6MZvMzJBgVxC2bkehrGRdgonBFdvxcQjADqmsO7lU3eJEONyEba1DApgH4fWkUo5SaeQxpCGtgGMwIGnBnIYJlhG5thvkgtWb8gzn04TNStLcLFn20E/g9nz3c32lgx8WIuCokKJoEmUchfFxyZSjEcaMaW3heXhCBrM3w1TbqrfkQFDMn3ay0w0d7NNo3ZxRI+xExkYMfSyV6ANUtgNeTFvYk2xnlT5taMKPourWsXOPrfH0V6trwn7oCqR6anFjeFCTQsGQLSgFnLmIAOof80XVLHu/uCIP6iUctKJ06kZxJaS2kTIjt0mNN8qM5eFQmXCK7Awf1ublU524cXYb2Dg3OPB+PlD6Qmf9RWPujmC0S1oNRlTBctvvqiWJRm8xtIqwL6Omzvu94R2U= user@nexus
+# [key]
+# device:   Framework 13
+# hostname: mirage
+# status:   in use
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK3E0wJTxWNYCw483YQ9wKO+EWt4Hj/8eaKAy5e2KDu2
 
-# [steamdeck] orbit
-ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8jaGLzxqlgqVnE6C3C08ZSV2oANWkPYDScakBAtKbBykJQkwjQ7ZpO5Ro3e9/fpLM57W0b7BkRGFD30hMwQjGY5pKkjJZuBazPifzyzCP1b3KgkNJ7pyM14vapdojvR8Ycr0LEiisK03mkSVj3O8ymaB2RPuIUHLhG3e+uKMoJ/sXkbweXpg1x1A0OEYR/PFkNu/skbY6vaL4kw0lIYaoD3l47iQv7tWFpTWDl8TsFDtrmvfXTdNL0aTXRT4Dx1oLg8RSdyvuZAr96OQRXb9g84a//KId2hNjNdX4myQfo3G6R5KWext48BsuTDyoIfUqReeJKbVOPe/iYVg2oRhCFPFhmErLe5eSswOwHOTqCdK2IVhRSQxjzbF08l3GZFUR7prVxoDE8XHuNcZ6uUjBIOdDfzO1ea9Rm6SPGoOWBCb44oD5HSEydLqNVkIqZA2MW053vro9lPs7UJxhfnlbcvrP6a1EYlWWTvZCm+bhBuKy9VdRE90IXXwzDMdICiE= deck@orbit
+# [key]
+# device:   Steam Deck LCD
+# hostname: orbit
+# status:   in use
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8jaGLzxqlgqVnE6C3C08ZSV2oANWkPYDScakBAtKbBykJQkwjQ7ZpO5Ro3e9/fpLM57W0b7BkRGFD30hMwQjGY5pKkjJZuBazPifzyzCP1b3KgkNJ7pyM14vapdojvR8Ycr0LEiisK03mkSVj3O8ymaB2RPuIUHLhG3e+uKMoJ/sXkbweXpg1x1A0OEYR/PFkNu/skbY6vaL4kw0lIYaoD3l47iQv7tWFpTWDl8TsFDtrmvfXTdNL0aTXRT4Dx1oLg8RSdyvuZAr96OQRXb9g84a//KId2hNjNdX4myQfo3G6R5KWext48BsuTDyoIfUqReeJKbVOPe/iYVg2oRhCFPFhmErLe5eSswOwHOTqCdK2IVhRSQxjzbF08l3GZFUR7prVxoDE8XHuNcZ6uUjBIOdDfzO1ea9Rm6SPGoOWBCb44oD5HSEydLqNVkIqZA2MW053vro9lPs7UJxhfnlbcvrP6a1EYlWWTvZCm+bhBuKy9VdRE90IXXwzDMdICiE=
 
-# [desktop] sentinel
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJAHTrNG1pm6+6P+kFkg0FtmvEhB58q9K2+m+Bm/DWyn prpl@sentinel
+# [key]
+# device:   PC
+# hostname: sentinel
+# status:   in use
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJAHTrNG1pm6+6P+kFkg0FtmvEhB58q9K2+m+Bm/DWyn
 
-# [phone] gravity
+# [key]
+# device:   Sony Xperia XZ2 Compact
+# hostname: sakura
+# status:   in use
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINvWqoTbvZEDkyoavHBTPehuIFWFoRt3YJHS3CYYf8zY
+
+# [key]
+# device:   HP Elitebook 830 G5
+# hostname: nexus
+# status:   retired
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCWcicy7f5VASzaZs5zuTU4bSphzYF1RKD8a+Snqi54dloZAAR3XENW83+j3AEbbQ/Xamdkvc1leF6zZgUlNT+yhmaQpQAwL3jd8gSMgizPFv0t8j6MZvMzJBgVxC2bkehrGRdgonBFdvxcQjADqmsO7lU3eJEONyEba1DApgH4fWkUo5SaeQxpCGtgGMwIGnBnIYJlhG5thvkgtWb8gzn04TNStLcLFn20E/g9nz3c32lgx8WIuCokKJoEmUchfFxyZSjEcaMaW3heXhCBrM3w1TbqrfkQFDMn3ay0w0d7NNo3ZxRI+xExkYMfSyV6ANUtgNeTFvYk2xnlT5taMKPourWsXOPrfH0V6trwn7oCqR6anFjeFCTQsGQLSgFnLmIAOof80XVLHu/uCIP6iUctKJ06kZxJaS2kTIjt0mNN8qM5eFQmXCK7Awf1ublU524cXYb2Dg3OPB+PlD6Qmf9RWPujmC0S1oNRlTBctvvqiWJRm8xtIqwL6Omzvu94R2U=
+
+# [key]
+# device:   Apple iPhone XR
+# hostname: gravity
+# status:   retired
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDtjpxKun2Zm4NxL7udzQ+ZpZSlAqO+FKMVtIQbvhxg8
