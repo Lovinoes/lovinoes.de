@@ -26,11 +26,6 @@
 		<link rel="stylesheet" href="assets/main.css">
 		<noscript><link rel="stylesheet" href="assets/noscript.css"></noscript>
 	</head>
-    <script>
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
-    </script>
 	<body class="is-loading">
 		<div id="wrapper" style="min-height: auto !important">
 			<div id="main">
@@ -79,5 +74,8 @@
 			}
 		</style>
 		<script src="assets/main.js"></script>
+		<script>
+		    document.addEventListener('contextmenu', event => event.preventDefault());
+		</script>
 	</body>
 </html>
