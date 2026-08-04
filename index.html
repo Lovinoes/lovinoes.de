@@ -20,7 +20,7 @@
 
     <meta property="og:title" content="[Lovinoes.de]">
     <meta property="og:description" content="PseudoDev. I’m passionate about gaming, music, and exploring the latest tech.">
-    <meta property="og:image" content="https://cdn.lovinoes.de/files/lovinoes/banner_new-transparent.png">
+    <meta property="og:image" content="https://mirror.lovinoes.de/lovinoes/banner_new-transparent.png">
     <meta property="og:url" content="https://lovinoes.de/">
     <meta property="og:type" content="website">
     <meta property="og:image:type" content="image/png">
@@ -49,81 +49,570 @@
         @font-face { font-family:'Chakra Petch'; src:url('assets/fonts/ChakraPetch-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }
 
         ::selection { background:#fff; color:#000; }
+        [hidden] { display:none !important; }
 
-        body { margin:0; min-height:100vh; display:flex; justify-content:center; align-items:center; background:#0a0a0a; font-family:'Chakra Petch',sans-serif; color:#fff; cursor:default; }
+        body {
+            margin:0; min-height:100vh; background:#0a0a0a;
+            font-family:'Chakra Petch',sans-serif; color:#fff; cursor:default;
+            display:flex; flex-direction:column;
+        }
 
         .fade-in { opacity:0; transform:translateY(20px); animation:fadeInUp 0.8s forwards; }
         @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
 
-        .center-container { display:flex; gap:40px; align-items:center; justify-content:center; flex-wrap:wrap; }
-        .container { max-width:400px; text-align:center; padding:20px; }
+        .wrap { width:100%; max-width:1024px; margin:0 auto; padding:0 16px; box-sizing:border-box; }
+
+        /* ---------- header / nav ---------- */
+        .site-head {
+            position:sticky; top:0; z-index:10;
+            background:rgba(10,10,10,.85); backdrop-filter:blur(8px);
+            border-bottom:1px solid #1a1a1a;
+        }
+        .head-inner { display:flex; align-items:center; justify-content:center; height:56px; }
+
+        .nav { display:flex; align-items:center; gap:4px; }
+        .nav-link {
+            padding:6px 12px; border-radius:8px; font-size:.875rem; color:#999;
+            text-decoration:none; transition:background .2s, color .2s; -webkit-user-drag:none;
+        }
+        .nav-link:hover { color:#fff; background:#171717; }
+        .nav-link.active { color:#fff; background:#242424; }
+
+        /* ---------- page shell ---------- */
+        main { flex:1; display:flex; flex-direction:column; padding:48px 0 64px; }
         h1 { margin:0 0 10px; font-size:2.5rem; }
         p { margin:0 0 20px; color:#ccc; }
+        .page-lead { margin:0 0 8px; }
 
-        .links-container { display:flex; gap:15px; justify-content:center; flex-wrap:wrap; }
+        /* auto margins (not justify-content) so a page taller than the viewport
+           still starts at the top instead of having its head clipped off */
+        #page-home, #page-status { margin:auto 0; }
+
+        /* ---------- home (original centered layout, text left-aligned) ---------- */
+        .center-container { display:flex; gap:40px; align-items:center; justify-content:center; flex-wrap:wrap; }
+        .container { max-width:400px; text-align:left; padding:20px; }
+
+        .links-container { display:flex; gap:15px; justify-content:flex-start; flex-wrap:wrap; }
         .link-btn { padding:12px 24px; border:1px solid #fff; background:transparent; color:#fff; text-transform:uppercase; letter-spacing:.05em; text-decoration:none; box-shadow:0 0 8px rgba(255,255,255,.4); transition:.25s; -webkit-user-drag:none; }
         .link-btn:hover { box-shadow:0 0 12px rgba(255,255,255,.5); transform:translateY(-2px); }
 
-        .tools-window { width:300px; display:flex; flex-direction:column; justify-content:center; }
-        .tools-group { display:flex; flex-direction:column; gap:10px; }
+        /* scrolling project column: fixed viewport, list fades out at both ends */
+        .tools-window {
+            width:300px; height:360px; overflow:hidden;
+            -webkit-mask-image:linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+            mask-image:linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+        }
+        .tools-group { display:flex; flex-direction:column; gap:10px; will-change:transform; }
         .tool-card { display:flex; gap:12px; padding:14px 16px; border-radius:10px; background:#111; border:1px solid #2a2a2a; box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 25px rgba(0,0,0,.45); transition:.25s; text-decoration:none; color:inherit; -webkit-user-drag:none; }
         .tool-card:hover { border-color:#fff; box-shadow:0 0 12px rgba(255,255,255,.18); }
 
-        .tool-icon { width:40px; height:40px; flex-shrink:0; }
+        .tool-icon { width:32px; height:32px; flex-shrink:0; color:#fff; }
         .tool-card-body h4 { margin:0 0 4px; font-size:1rem; }
         .tool-card-body p { margin:0; font-size:.85rem; color:#bbb; }
 
+        /* ---------- status nodes ---------- */
+        #page-status h1, #page-status .page-lead { text-align:center; }
+        .page-sub { font-size:.85rem; color:#888; }
+        .page-sub a { color:#ccc; text-decoration:underline; }
+        .page-sub a:hover { color:#fff; }
+        .nodes { display:flex; flex-direction:column; gap:14px; margin-top:24px; }
+
+        .node-card {
+            padding:24px 28px; border-radius:10px; background:#111;
+            border:1px solid rgba(255,255,255,.12);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.06),
+                0 10px 25px rgba(0,0,0,.45),
+                0 0 16px rgba(255,255,255,.06);
+            transition:box-shadow .25s, border-color .25s;
+        }
+        .node-card:hover {
+            border-color:rgba(255,255,255,.35);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.06),
+                0 10px 25px rgba(0,0,0,.45),
+                0 0 14px rgba(255,255,255,.10);
+        }
+
+        .node-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+        .node-head h3 { margin:0; font-size:1.15rem; letter-spacing:.03em; }
+        .node-title { display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
+        .node-kind { font-size:.78rem; color:#777; letter-spacing:.02em; }
+        .node-uptime { font-size:.8rem; color:#9a9; background:#0a1a0a; border:1px solid #1f3a1f; border-radius:6px; padding:4px 10px; white-space:nowrap; font-variant-numeric:tabular-nums; }
+        .node-uptime.offline { color:#e88; background:#1a0a0a; border-color:#3a1f1f; }
+
+        /* everything inside the metric grid defaults to a plain system font;
+           only the CPU/Memory/Storage/Network labels keep the brand font (Chakra Petch) */
+        .node-body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+        .node-grid { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:24px; }
+        .metric-label { display:flex; align-items:center; gap:6px; font-size:.85rem; color:#bbb; margin-bottom:10px; font-family:'Chakra Petch',sans-serif; }
+        .metric-label svg { flex-shrink:0; width:16px; height:16px; }
+        .metric-model { font-size:.875rem; font-weight:500; margin:0 0 8px; font-variant-numeric:tabular-nums; }
+        .metric-sub { font-size:.78rem; color:#888; margin-top:4px; font-variant-numeric:tabular-nums; }
+
+        .bar-track { height:6px; border-radius:4px; background:#222; overflow:hidden; margin-top:6px; }
+        /* width:0 so a node with no data yet shows an empty bar, not a full green one */
+        .bar-fill { width:0; height:100%; border-radius:4px; background:#3ddc6a; transition:width .4s ease, background .4s ease; }
+        .bar-fill.warn { background:#e5c15b; }
+        .bar-fill.high { background:#e08a4a; }
+        .bar-row { display:flex; align-items:center; gap:8px; }
+        .bar-row .bar-track { flex:1; }
+        /* fixed width + tabular figures so the percentage text never changes width and
+           shoves the bar-track around when the value updates */
+        .bar-pct { font-size:.8rem; color:#ccc; min-width:44px; text-align:right; font-variant-numeric:tabular-nums; }
+
+        /* network: persistent row per interface, name on its own line, up/down stacked below */
+        .network-row { margin-bottom:14px; }
+        .network-row:last-child { margin-bottom:0; }
+        .network-name { font-size:.9rem; font-weight:500; margin:0 0 4px; }
+        .network-rate { font-size:.78rem; color:#888; line-height:1.5; font-variant-numeric:tabular-nums; }
+
+        .node-error { display:block; color:#e88; font-size:.85rem; margin-bottom:12px; }
+
+        /* ---------- footer ---------- */
+        .site-foot { border-top:1px solid #1a1a1a; padding:22px 0; color:#666; font-size:.8rem; text-align:center; }
+        .site-foot a { color:#999; text-decoration:none; }
+        .site-foot a:hover { color:#fff; }
+
         @media (max-width:900px) { .center-container { flex-direction:column; } }
+
+        @media (max-width:760px) {
+            main { padding:32px 0 48px; }
+            h1 { font-size:2rem; }
+            .node-card { padding:20px; }
+            .node-grid { grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
+            .nav-link { padding:6px 10px; }
+        }
     </style>
 </head>
 <body>
-
 <svg style="display:none">
-    <symbol id="icon-images" viewBox="0 0 24 24" fill="#fff">
+    <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor">
         <path d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/>
     </symbol>
 </svg>
 
-<div class="center-container fade-in">
-    <div class="container fade-in">
-        <h1>Hi, my name is Lovinoes</h1>
-        <p>PseudoDev. I’m passionate about gaming, music, and exploring the latest tech.</p>
-        <p>I’m just a regular guy from the diverse and lively area near Stuttgart, Germany. If you’d like to get in touch, feel free to send me an email at
-            <a href="mailto:lovinoes@lovinoes.de" style="color:#fff;text-decoration:underline;">lovinoes@lovinoes.de</a>
-        </p>
-        <div class="links-container">
-            <a href="https://x.com/lovinoes" class="link-btn">Twitter</a>
-            <a href="https://github.com/lovinoes/" class="link-btn">GitHub</a>
-            <a href="https://discord.com/users/904679820124880896" class="link-btn">Discord</a>
-        </div>
+<header class="site-head">
+    <div class="wrap head-inner">
+        <nav class="nav">
+            <a href="#home" class="nav-link" data-page="home">Home</a>
+            <a href="#status" class="nav-link" data-page="status">Status</a>
+            <a href="https://mirror.lovinoes.de/" class="nav-link">Mirror</a>
+        </nav>
     </div>
+</header>
 
-    <div class="tools-window fade-in">
-        <div class="tools-group">
-            <a href="https://github.com/Lovinoes/images" class="tool-card">
-                <div class="tool-icon"><svg height="32" width="32"><use href="#icon-images"></use></svg></div>
-                <div class="tool-card-body"><h4>Images</h4><p>Docker images for Pterodactyl</p></div>
-            </a>
-            <a href="https://github.com/Lovinoes/docker-compose-files" class="tool-card">
-                <div class="tool-icon"><svg height="32" width="32"><use href="#icon-images"></use></svg></div>
-                <div class="tool-card-body"><h4>Docker Compose</h4><p>Personal Compose files</p></div>
-            </a>
-            <a href="https://github.com/Lovinoes/error-documents" class="tool-card">
-                <div class="tool-icon"><svg height="32" width="32"><use href="#icon-images"></use></svg></div>
-                <div class="tool-card-body"><h4>Error Documents</h4><p>Collection of HTML error pages</p></div>
-            </a>
-            <a href="" class="tool-card">
-                <div class="tool-icon">
-                    <img src="assets/images/icon_construct.webp" alt="Other Projects" width="32" height="32">
+<main class="wrap">
+    <!-- ---------- Home ---------- -->
+    <section id="page-home">
+        <div class="center-container">
+            <div class="container">
+                <h1>Hi, my name is Lovinoes</h1>
+                <p>PseudoDev. I’m passionate about gaming, music, and exploring the latest tech.</p>
+                <p>I’m just a regular guy from the diverse and lively area near Stuttgart, Germany. If you’d like to get in touch, feel free to send me an email at
+                    <a href="mailto:lovinoes@lovinoes.de" style="color:#fff;text-decoration:underline;">lovinoes@lovinoes.de</a>
+                </p>
+                <div class="links-container">
+                    <a href="https://x.com/lovinoes" class="link-btn">Twitter</a>
+                    <a href="https://github.com/lovinoes/" class="link-btn">GitHub</a>
+                    <a href="https://discord.com/users/904679820124880896" class="link-btn">Discord</a>
                 </div>
-                <div class="tool-card-body"><h4>Other...</h4><p>Other projects coming soon...</p></div>
-            </a>
+            </div>
+
+            <div class="tools-window">
+                <div class="tools-group">
+                    <a href="https://github.com/Lovinoes/images" class="tool-card">
+                        <svg class="tool-icon"><use href="#i-github"></use></svg>
+                        <div class="tool-card-body"><h4>Images</h4><p>Docker images for Pterodactyl</p></div>
+                    </a>
+                    <a href="https://github.com/Lovinoes/autoinstallers" class="tool-card">
+                        <svg class="tool-icon"><use href="#i-github"></use></svg>
+                        <div class="tool-card-body"><h4>Autoinstallers</h4><p>Collection of shell scripts to quickly deploy game servers.</p></div>
+                    </a>
+                    <a href="https://github.com/Lovinoes/ndot-logo-generator" class="tool-card">
+                        <svg class="tool-icon"><use href="#i-github"></use></svg>
+                        <div class="tool-card-body"><h4>ndot-logo-generator</h4><p>Small vibecoded HTML logo generator using the Nothing fonts.</p></div>
+                    </a>
+                    <a href="https://github.com/Lovinoes/statusserver" class="tool-card">
+                        <svg class="tool-icon"><use href="#i-github"></use></svg>
+                        <div class="tool-card-body"><h4>statusserver</h4><p>Go agent feeding the live metrics on the status page.</p></div>
+                    </a>
+                    <a href="https://github.com/Lovinoes/error-documents" class="tool-card">
+                        <svg class="tool-icon"><use href="#i-github"></use></svg>
+                        <div class="tool-card-body"><h4>error-documents</h4><p>HTTP error pages for webservers such as nginx, apache etc...</p></div>
+                    </a>
+                    <div class="tool-card">
+                        <img class="tool-icon" src="assets/images/icon_construct.webp" alt="" width="32" height="32">
+                        <div class="tool-card-body"><h4>Other...</h4><p>Other projects coming soon...</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ---------- Status ---------- -->
+    <section id="page-status" hidden>
+        <h1>Status</h1>
+        <p class="page-lead">Live status for the machines I run.</p>
+        <p class="page-lead page-sub">I also keep status pages at
+            <a href="https://status.lovinoes.de/">Skrime</a> and
+            <a href="https://status2.lovinoes.de/">HetrixTools</a>.
+        </p>
+
+        <!-- To add another node, copy one <div class="node-card" ...></div> line below and change:
+               - data-ws-url    that node's /status/nodes/<name>/ws websocket endpoint (wss://)
+               - data-name      code shown as the card title
+               - data-kind      machine type, muted text next to the title
+               - data-cpu-model / data-cpu-cores / data-mem-spec   that machine's hardware
+             The card body is cloned from #node-tpl the first time the Status page is opened. -->
+        <div class="nodes" id="nodes">
+            <div class="node-card"
+                 data-ws-url="wss://lovinoes.de/status/nodes/hde01/ws"
+                 data-name="HDE-01"
+                 data-kind="Raspberry Pi CM5"
+                 data-cpu-model="Broadcom BCM2712"
+                 data-cpu-cores="4 cores"
+                 data-mem-spec="16GB LPDDR4X @ 4267 MT/s"></div>
+
+            <div class="node-card"
+                 data-ws-url="wss://lovinoes.de/status/nodes/hde02/ws"
+                 data-name="HDE-02"
+                 data-kind="KVM QEMU Virtual machine"
+                 data-cpu-model="AMD EPYC™ 7443P"
+                 data-cpu-cores="4 cores"
+                 data-mem-spec="10GB DDR4 @ 3200 MT/s"></div>
+
+            <div class="node-card"
+                 data-ws-url="wss://lovinoes.de/status/nodes/hde03/ws"
+                 data-name="HDE-03"
+                 data-kind="KVM QEMU Virtual machine"
+                 data-cpu-model="AMD EPYC™ 7402P"
+                 data-cpu-cores="6 cores"
+                 data-mem-spec="16GB DDR4 @ 3200 MT/s"></div>
+        </div>
+    </section>
+</main>
+
+<footer class="site-foot">
+    <div class="wrap">Lovinoes · <a href="https://lovinoes.de/">lovinoes.de</a></div>
+</footer>
+
+<template id="node-tpl">
+    <div class="node-head">
+        <div class="node-title">
+            <h3 class="node-name"></h3>
+            <span class="node-kind"></span>
+        </div>
+        <span class="node-uptime offline">loading…</span>
+    </div>
+    <div class="node-body">
+        <span class="node-error" style="display:none;"></span>
+        <div class="node-grid">
+            <div class="metric metric-cpu">
+                <div class="metric-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v2"></path><path d="M12 2v2"></path><path d="M17 20v2"></path><path d="M17 2v2"></path><path d="M2 12h2"></path><path d="M2 17h2"></path><path d="M2 7h2"></path><path d="M20 12h2"></path><path d="M20 17h2"></path><path d="M20 7h2"></path><path d="M7 20v2"></path><path d="M7 2v2"></path><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="8" y="8" width="8" height="8" rx="1"></rect></svg>
+                    <span>CPU</span>
+                </div>
+                <div class="metric-model cpu-model"></div>
+                <div class="metric-sub cpu-cores" style="margin:0 0 6px;"></div>
+                <div class="bar-row">
+                    <div class="bar-track"><div class="bar-fill cpu-fill"></div></div>
+                    <span class="bar-pct cpu-pct">—</span>
+                </div>
+                <div class="metric-sub cpu-temp"></div>
+            </div>
+            <div class="metric metric-mem">
+                <div class="metric-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 12v-2"></path><path d="M12 18v-2"></path><path d="M16 12v-2"></path><path d="M16 18v-2"></path><path d="M2 11h1.5"></path><path d="M20 18v-2"></path><path d="M20.5 11H22"></path><path d="M4 18v-2"></path><path d="M8 12v-2"></path><path d="M8 18v-2"></path><rect x="2" y="6" width="20" height="10" rx="2"></rect></svg>
+                    <span>Memory</span>
+                </div>
+                <div class="metric-model mem-spec"></div>
+                <div class="bar-row">
+                    <div class="bar-track"><div class="bar-fill mem-fill"></div></div>
+                    <span class="bar-pct mem-pct">—</span>
+                </div>
+                <div class="metric-sub mem-used"></div>
+            </div>
+            <div class="metric metric-storage">
+                <div class="metric-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 16h.01"></path><path d="M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path><path d="M21.946 12.013H2.054"></path><path d="M6 16h.01"></path></svg>
+                    <span>Storage</span>
+                </div>
+                <div class="metric-model storage-mounts">—</div>
+                <div class="bar-row">
+                    <div class="bar-track"><div class="bar-fill storage-fill"></div></div>
+                    <span class="bar-pct storage-pct">—</span>
+                </div>
+                <div class="metric-sub storage-used"></div>
+            </div>
+            <div class="metric metric-network">
+                <div class="metric-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="16" y="16" width="6" height="6" rx="1"></rect><rect x="2" y="16" width="6" height="6" rx="1"></rect><rect x="9" y="2" width="6" height="6" rx="1"></rect><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"></path><path d="M12 12V8"></path></svg>
+                    <span>Network</span>
+                </div>
+                <div class="network-list"></div>
+            </div>
         </div>
     </div>
-</div>
+</template>
 
 <script>
-    document.addEventListener('dragstart', e=>e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+
+    function fmtBytes(b) {
+        if (b == null || isNaN(b)) return '—';
+        const units = ['B','KiB','MiB','GiB','TiB','PiB'];
+        let i = 0;
+        b = Number(b);
+        while (b >= 1024 && i < units.length - 1) { b /= 1024; i++; }
+        return b.toFixed(2) + ' ' + units[i];
+    }
+
+    function fmtRate(b) {
+        if (b == null || isNaN(b)) return '—';
+        return fmtBytes(b) + '/s';
+    }
+
+    // Static hardware info only needs to be written once, not on every websocket tick.
+    function initStaticInfo(card) {
+        card.querySelector('.node-name').textContent = card.dataset.name || '';
+        card.querySelector('.node-kind').textContent = card.dataset.kind || '';
+        card.querySelector('.cpu-model').textContent = card.dataset.cpuModel || '';
+        card.querySelector('.cpu-cores').textContent = card.dataset.cpuCores || '';
+        card.querySelector('.mem-spec').textContent = card.dataset.memSpec || '';
+    }
+
+    // One bar renderer for CPU/memory/storage: width, load colour, and the label.
+    function setBar(card, sel, pct, digits) {
+        const fill = card.querySelector('.' + sel + '-fill');
+        const v = (pct == null || isNaN(pct)) ? null : Number(pct);
+        fill.style.width = (v || 0) + '%';
+        fill.classList.toggle('warn', v != null && v >= 60 && v < 75);
+        fill.classList.toggle('high', v != null && v >= 75);
+        card.querySelector('.' + sel + '-pct').textContent = v == null ? '—' : v.toFixed(digits) + '%';
+    }
+
+    // Mounts are aggregated into one bar (rjansen-style): total used across all of them.
+    function syncStorage(card, storageData) {
+        const mounts = storageData || [];
+        const used = mounts.reduce((n, s) => n + (Number(s.used_bytes) || 0), 0);
+        const total = mounts.reduce((n, s) => n + (Number(s.total_bytes) || 0), 0);
+
+        card.querySelector('.storage-mounts').textContent =
+            mounts.length ? mounts.length + (mounts.length === 1 ? ' mount' : ' mounts') : '—';
+        setBar(card, 'storage', total ? (used / total) * 100 : null, 0);
+        card.querySelector('.storage-used').textContent = total ? fmtBytes(used) + ' / ' + fmtBytes(total) : '';
+    }
+
+    // Same persistence approach for network interfaces (keyed by interface name).
+    function syncNetwork(card, networkData) {
+        const container = card.querySelector('.network-list');
+        if (!container._rows) container._rows = {};
+        const seen = new Set();
+
+        (networkData || []).forEach(n => {
+            const key = n.interface || '';
+            seen.add(key);
+            let row = container._rows[key];
+            if (!row) {
+                row = document.createElement('div');
+                row.className = 'network-row';
+                row.innerHTML =
+                    '<div class="network-name"></div>' +
+                    '<div class="network-rate net-up"></div>' +
+                    '<div class="network-rate net-down"></div>';
+                container.appendChild(row);
+                container._rows[key] = row;
+            }
+            row.querySelector('.network-name').textContent = key;
+            row.querySelector('.net-up').textContent = '↑ ' + (n.tx_human || fmtRate(n.tx_bytes_per_sec));
+            row.querySelector('.net-down').textContent = '↓ ' + (n.rx_human || fmtRate(n.rx_bytes_per_sec));
+        });
+
+        Object.keys(container._rows).forEach(key => {
+            if (!seen.has(key)) {
+                container._rows[key].remove();
+                delete container._rows[key];
+            }
+        });
+    }
+
+    function updateCard(card, data) {
+        const uptimeEl = card.querySelector('.node-uptime');
+
+        // Uptime badge
+        if (data.uptime && data.uptime.human) {
+            uptimeEl.textContent = 'up ' + data.uptime.human;
+            uptimeEl.classList.remove('offline');
+        } else {
+            uptimeEl.textContent = 'unknown';
+            uptimeEl.classList.add('offline');
+        }
+
+        // CPU
+        setBar(card, 'cpu', data.cpu ? data.cpu.usage_percent : null, 1);
+        const tempEl = card.querySelector('.cpu-temp');
+        if (data.cpu && data.cpu.temperature_c != null) {
+            tempEl.textContent = data.cpu.temperature_c.toFixed(1) + '°C';
+        } else {
+            tempEl.textContent = '';
+        }
+
+        // Memory
+        const mem = data.memory || {};
+        setBar(card, 'mem', mem.used_percent, 1);
+        card.querySelector('.mem-used').textContent =
+            (mem.used_human || fmtBytes(mem.used_bytes)) + ' / ' + (mem.total_human || fmtBytes(mem.total_bytes));
+
+        // Storage aggregate + network rows, updated in place (smooth, no teleport)
+        syncStorage(card, data.storage);
+        syncNetwork(card, data.network);
+    }
+
+    function markOffline(card) {
+        const uptimeEl = card.querySelector('.node-uptime');
+        const errEl = card.querySelector('.node-error');
+        uptimeEl.textContent = 'offline';
+        uptimeEl.classList.add('offline');
+        errEl.style.display = 'block';
+        errEl.textContent = 'Unable to reach this node.';
+    }
+
+    // One persistent websocket per node-card, with auto-reconnect on close/error.
+    function connectCard(card) {
+        const wsUrl = card.dataset.wsUrl;
+        const errEl = card.querySelector('.node-error');
+        let reconnectTimer = null;
+
+        function open() {
+            let ws;
+            try {
+                ws = new WebSocket(wsUrl);
+            } catch (e) {
+                markOffline(card);
+                scheduleReconnect();
+                return;
+            }
+
+            ws.addEventListener('open', () => {
+                errEl.style.display = 'none';
+            });
+
+            ws.addEventListener('message', (event) => {
+                let data;
+                try {
+                    data = JSON.parse(event.data);
+                } catch (e) {
+                    return; // ignore malformed frames
+                }
+                updateCard(card, data);
+            });
+
+            ws.addEventListener('close', () => {
+                markOffline(card);
+                scheduleReconnect();
+            });
+
+            ws.addEventListener('error', () => {
+                ws.close();
+            });
+        }
+
+        function scheduleReconnect() {
+            if (reconnectTimer) return;
+            reconnectTimer = setTimeout(() => {
+                reconnectTimer = null;
+                open();
+            }, 5000);
+        }
+
+        open();
+    }
+
+    // Cards are built + connected the first time Status is opened, so a visitor who
+    // never leaves Home never opens a websocket.
+    let nodesStarted = false;
+    function startNodes() {
+        if (nodesStarted) return;
+        nodesStarted = true;
+        const tpl = document.getElementById('node-tpl');
+        document.querySelectorAll('.node-card').forEach(card => {
+            card.appendChild(tpl.content.cloneNode(true));
+            initStaticInfo(card);
+            connectCard(card);
+        });
+    }
+
+    const PAGES = { home: 'page-home', status: 'page-status' };
+    const TITLES = { home: '[Lovinoes.de]', status: '[Lovinoes.de] Status' };
+
+    function route() {
+        // #status wins; the pathname check means serving this same file at /status also works.
+        const hash = location.hash.replace(/^#\/?/, '');
+        const name = PAGES[hash] ? hash : (location.pathname.includes('status') ? 'status' : 'home');
+
+        Object.entries(PAGES).forEach(([key, id]) => {
+            const el = document.getElementById(id);
+            el.hidden = key !== name;
+            if (key === name) {
+                el.classList.remove('fade-in');
+                void el.offsetWidth; // restart the entrance animation on every switch
+                el.classList.add('fade-in');
+            }
+        });
+        document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.page === name));
+        document.title = TITLES[name];
+        if (name === 'status') startNodes();
+        window.scrollTo(0, 0);
+    }
+
+    window.addEventListener('hashchange', route);
+    route();
+
+    // Project column: seamless vertical loop. The list is duplicated once, so resetting
+    // the offset by exactly one copy is invisible. Hover glides the speed to zero over
+    // DRIFT seconds rather than pausing outright.
+    (function loopProjects() {
+        const view = document.querySelector('.tools-window');
+        const track = document.querySelector('.tools-group');
+        if (!view || !track || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const originals = [...track.children];
+        originals.forEach(el => {
+            const copy = el.cloneNode(true);
+            copy.setAttribute('aria-hidden', 'true');   // clones are decorative...
+            if (copy.tagName === 'A') copy.tabIndex = -1;  // ...and not tab stops
+            track.appendChild(copy);
+        });
+
+        const SPEED = 24;              // px per second at full tilt
+        const DRIFT = 2.5;             // seconds to glide from full speed to a standstill (and back)
+        let cycle = 0, offset = 0, p = 1, target = 1, last = performance.now();
+
+        // Height of one copy, measured from the first clone's position — gap-agnostic.
+        const measure = () => track.children[originals.length].offsetTop - track.children[0].offsetTop;
+
+        const stop = () => { target = 0; };
+        const go = () => { target = 1; };
+        view.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') stop(); });
+        view.addEventListener('pointerleave', e => { if (e.pointerType !== 'touch') go(); });
+        view.addEventListener('focusin', stop);   // keyboard users get the same pause
+        view.addEventListener('focusout', go);
+        new ResizeObserver(() => { cycle = 0; }).observe(track);
+
+        requestAnimationFrame(function frame(now) {
+            const dt = Math.min((now - last) / 1000, 0.1);   // clamp so a backgrounded tab doesn't jump
+            last = now;
+            requestAnimationFrame(frame);
+            if (!track.offsetParent) return;                 // Status page is showing
+            if (!cycle && !(cycle = measure())) return;      // not laid out yet
+            // smoothstep, so the glide leaves and reaches a standstill at zero rate of
+            // change — an exponential ease would brake hardest the instant you hover.
+            p = Math.min(1, Math.max(0, p + (target ? dt : -dt) / DRIFT));
+            offset = (offset + SPEED * (p * p * (3 - 2 * p)) * dt) % cycle;
+            track.style.transform = 'translateY(' + -offset + 'px)';
+        });
+    })();
 </script>
 </body>
 </html>
