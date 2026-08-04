@@ -59,8 +59,11 @@
 
         .fade-in { opacity:0; transform:translateY(20px); animation:fadeInUp 0.8s forwards; }
         @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
-        body { transition:opacity .3s ease; }
-        body.leaving { opacity:0; }
+
+        /* Home/Status fade only the <section>; Mirror is a real navigation, so fade the
+           same region on the way out. Scoped to main so the nav and footer stay put. */
+        main { transition:opacity .12s ease; }
+        body.leaving main { opacity:0; }
 
         .wrap { width:100%; max-width:1024px; margin:0 auto; padding:0 16px; box-sizing:border-box; }
 
@@ -118,6 +121,13 @@
         .page-sub a { color:#ccc; text-decoration:underline; }
         .page-sub a:hover { color:#fff; }
         .nodes { display:flex; flex-direction:column; gap:14px; margin-top:24px; }
+
+        /* padding-left matches .node-card's content edge, so the badge lines up with the
+           CPU column. width+height attrs on the img give it a 4:1 aspect ratio, so the box
+           is reserved before it loads and the centred page doesn't jump when it arrives.
+           The mobile value lives in the max-width:760px block, beside the card padding. */
+        .badges { margin-top:28px; padding-left:29px; }   /* card's 28px padding + its 1px border */
+        .badges img { max-width:100%; height:auto; -webkit-user-drag:none; }
 
         .node-card {
             padding:24px 28px; border-radius:10px; background:#111;
@@ -182,6 +192,7 @@
             main { padding:32px 0 48px; }
             h1 { font-size:2rem; }
             .node-card { padding:20px; }
+            .badges { padding-left:21px; }   /* keep it aligned with the card padding above */
             .node-grid { grid-template-columns:repeat(2, minmax(0,1fr)); gap:18px; }
             .nav-link { padding:6px 10px; }
         }
@@ -233,15 +244,15 @@
                     </a>
                     <a href="https://github.com/Lovinoes/ndot-logo-generator" class="tool-card">
                         <svg class="tool-icon"><use href="#i-github"></use></svg>
-                        <div class="tool-card-body"><h4>ndot-logo-generator</h4><p>Small vibecoded HTML logo generator using the Nothing fonts.</p></div>
+                        <div class="tool-card-body"><h4>ndot-logo-generator</h4><p>A small vibecoded HTML logo generator using the Nothing fonts.</p></div>
                     </a>
                     <a href="https://github.com/Lovinoes/statusserver" class="tool-card">
                         <svg class="tool-icon"><use href="#i-github"></use></svg>
-                        <div class="tool-card-body"><h4>statusserver</h4><p>Go agent feeding the live metrics on the status page.</p></div>
+                        <div class="tool-card-body"><h4>statusserver</h4><p>Go agent feeding the live metrics on my status page.</p></div>
                     </a>
-                    <a href="https://github.com/Lovinoes/error-documents" class="tool-card">
+                    <a href="https://github.com/Lovinoes/errors" class="tool-card">
                         <svg class="tool-icon"><use href="#i-github"></use></svg>
-                        <div class="tool-card-body"><h4>error-documents</h4><p>HTTP error pages for webservers such as nginx, apache etc...</p></div>
+                        <div class="tool-card-body"><h4>errors</h4><p>Dark, minimal HTTP error pages for nginx, Apache, Plesk etc.</p></div>
                     </a>
                     <div class="tool-card">
                         <img class="tool-icon" src="assets/images/icon_construct.webp" alt="" width="32" height="32">
@@ -291,6 +302,11 @@
                  data-cpu-model="AMD EPYC™ 7402P"
                  data-cpu-cores="6 cores"
                  data-mem-spec="16GB DDR4 @ 3200 MT/s"></div>
+        </div>
+        <div class="badges">
+            <a href="https://www.abuseipdb.com/user/137934" title="AbuseIPDB is an IP address blacklist for webmasters and sysadmins to report IP addresses engaging in abusive behavior on their networks">
+                <img src="https://www.abuseipdb.com/contributor/137934.svg" alt="AbuseIPDB Contributor Badge" width="300" height="75" style="width: 223px;background: #35c246 linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.3) 50%, rgba(0,0,0,.2) 51%, rgba(0,0,0,0)); padding: 5px;box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .2);">
+            </a>
         </div>
     </section>
 </main>
@@ -571,6 +587,35 @@
     window.addEventListener('hashchange', route);
     route();
 
+    // Home and Status swap in-page and re-run the fade. Mirror is a real navigation to
+    // another origin, so the browser hard-cuts to it — fade the same region out first.
+    (function fadeOnLeave() {
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const page = document.querySelector('main');
+
+        document.querySelectorAll('.nav a[href^="http"]').forEach(link => {
+            link.addEventListener('click', e => {
+                // new-tab / middle-click / modified clicks stay the browser's business
+                if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                e.preventDefault();
+
+                let gone = false;
+                const go = () => { if (!gone) { gone = true; location.href = link.href; } };
+
+                document.body.classList.add('leaving');
+                // transitionend bubbles, so ignore card/tool transitions firing on children
+                page.addEventListener('transitionend', ev => {
+                    if (ev.target === page && ev.propertyName === 'opacity') go();
+                });
+                setTimeout(go, 200);   // fallback if the transition never fires
+            });
+        });
+
+        // The back button can restore this page from bfcache still faded out — undo it.
+        window.addEventListener('pageshow', () => document.body.classList.remove('leaving'));
+    })();
+
     // Project column: seamless vertical loop. The list is duplicated once, so resetting
     // the offset by exactly one copy is invisible. Hover glides the speed to zero over
     // DRIFT seconds rather than pausing outright.
@@ -600,6 +645,10 @@
         view.addEventListener('pointerleave', e => { if (e.pointerType !== 'touch') go(); });
         view.addEventListener('focusin', stop);   // keyboard users get the same pause
         view.addEventListener('focusout', go);
+        // Card heights change after first paint — the webfont swapping in, the icon image
+        // loading, a window resize rewrapping text. Any of those makes a cached `cycle`
+        // measure a layout that no longer exists, and the loop then wraps at the wrong
+        // point and visibly jumps. Re-measure whenever the track actually changes size.
         new ResizeObserver(() => { cycle = 0; }).observe(track);
 
         requestAnimationFrame(function frame(now) {
