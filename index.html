@@ -6,31 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <meta name="title" content="[Lovinoes.de]" />
-    <meta name="description" content="PseudoDev. I’m passionate about gaming, music, and exploring the latest tech." />
     <meta name="keywords" content="Lovinoes, Lovinor, developer, Linux, self-hosting, tech, Germany, projects, programming, gaming, software, coding, sysadmin, PC building, scripting" />
     <meta name="author" content="Lovinoes" />
     <meta name="language" content="en" />
     <meta name="robots" content="index, follow" />
     <meta name="referrer" content="same-origin" />
 
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content="#FFFFFF" />
     <meta name="color-scheme" content="dark" />
     <meta name="darkreader-lock" />
 
-    <meta property="og:title" content="[Lovinoes.de]" />
-    <meta property="og:description" content="PseudoDev. I’m passionate about gaming, music, and exploring the latest tech." />
-    <meta property="og:image" content="https://mirror.lovinoes.de/lovinoes/banner_new-transparent.png" />
-    <meta property="og:url" content="https://lovinoes.de/" />
+    <!-- Link previews (Discord, Twitter, ...) only show the page title, in the theme color.
+         Crawlers don't run JavaScript, so nginx's SSI picks the title per page. ("\/status" is
+         SSI for the literal string "/status"; a bare "/..." would be read as a regex.) -->
+    <!--# if expr="$request_uri = \/status" --><!--# set var="og_title" value="[Status]" --><!--# elif expr="$request_uri = \/projects" --><!--# set var="og_title" value="[Projects]" --><!--# else --><!--# set var="og_title" value="[Lovinoes.de]" --><!--# endif -->
+    <meta property="og:title" content='<!--# echo var="og_title" default="[Lovinoes.de]" -->' />
     <meta property="og:type" content="website" />
-    <meta property="og:image:type" content="image/png" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:image:width" content="550" />
-    <meta property="og:image:height" content="100" />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://lovinoes.de/" />
-    <meta name="twitter:title" content="[Lovinoes.de]" />
-    <meta name="twitter:description" content="PseudoDev. I’m passionate about gaming, music, and exploring the latest tech." />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content='<!--# echo var="og_title" default="[Lovinoes.de]" -->' />
     <meta name="twitter:site" content="@Lovinoes" />
     <meta name="twitter:creator" content="@Lovinoes" />
 
@@ -40,7 +35,6 @@
     <link rel="preconnect" href="https://api.github.com" crossorigin />
     <link rel="preconnect" href="https://cdn.discordapp.com" />
 
-    <link rel="canonical" href="https://lovinoes.de/" />
     <link rel="icon" type="image/png" href="/favicons/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
     <link rel="shortcut icon" href="/favicons/favicon.ico" />

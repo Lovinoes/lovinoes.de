@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 
-/** Sets the tab title: "[Lovinoes.de]" or "[Lovinoes.de] Status". */
+/** Sets the tab title: "[Lovinoes.de]" on home, "[Status]", "[Projects]", "[404]" elsewhere. */
 export function useTitle(page?: string) {
   useEffect(() => {
-    document.title = page ? `[Lovinoes.de] ${page}` : "[Lovinoes.de]"
+    document.title = page ? `[${page}]` : "[Lovinoes.de]"
   }, [page])
 }
