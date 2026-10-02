@@ -1,5 +1,5 @@
 import type { ComponentType, ReactNode } from "react"
-import { Cpu, HardDrive, MemoryStick, Network } from "lucide-react"
+import { Cpu, HardDrive, Info, MemoryStick, Network } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -34,10 +34,13 @@ function num(v: unknown): number | null {
 function Metric({
   icon: Icon,
   label,
+  hint,
   children,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
+  /** Extra info, shown on hover/focus of an icon next to the label. */
+  hint?: string
   children: ReactNode
 }) {
   return (
@@ -45,6 +48,20 @@ function Metric({
       <div className="flex items-center gap-1.5 text-sm font-medium">
         <Icon className="size-4 text-muted-foreground" />
         {label}
+        {hint && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                aria-label={hint}
+                className="inline-flex cursor-help rounded-full text-muted-foreground/70 transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/50"
+              >
+                <Info className="size-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-60">{hint}</TooltipContent>
+          </Tooltip>
+        )}
       </div>
       <div className="flex flex-col gap-1.5 font-data text-xs text-muted-foreground tabular-nums">{children}</div>
     </div>
@@ -149,7 +166,11 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
             )}
           </Metric>
 
-          <Metric icon={HardDrive} label="Storage">
+          <Metric
+            icon={HardDrive}
+            label="Storage"
+            hint="Storage devices aren’t always detected or displayed correctly, e.g. RAID arrays, ZFS/btrfs pools or network shares."
+          >
             {mounts.length ? (
               <Tooltip>
                 <TooltipTrigger asChild>

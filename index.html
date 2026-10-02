@@ -16,16 +16,14 @@
     <meta name="color-scheme" content="dark" />
     <meta name="darkreader-lock" />
 
-    <!-- Link previews (Discord, Twitter, ...) only show the page title, in the theme color.
-         Crawlers don't run JavaScript, so nginx's SSI picks the title per page. ("\/status" is
-         SSI for the literal string "/status"; a bare "/..." would be read as a regex.) -->
-    <!--# if expr="$request_uri = \/status" --><!--# set var="og_title" value="[Status]" --><!--# elif expr="$request_uri = \/projects" --><!--# set var="og_title" value="[Projects]" --><!--# else --><!--# set var="og_title" value="[Lovinoes.de]" --><!--# endif -->
-    <meta property="og:title" content='<!--# echo var="og_title" default="[Lovinoes.de]" -->' />
+    <!-- Link previews (Discord, Twitter, ...) show only this title, in the theme color,
+         on every page. Browser tabs get per-page titles from the app. -->
+    <meta property="og:title" content="[Lovinoes.de]" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content='<!--# echo var="og_title" default="[Lovinoes.de]" -->' />
+    <meta name="twitter:title" content="[Lovinoes.de]" />
     <meta name="twitter:site" content="@Lovinoes" />
     <meta name="twitter:creator" content="@Lovinoes" />
 
