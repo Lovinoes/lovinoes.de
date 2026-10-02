@@ -39,9 +39,9 @@ export const projects: Project[] = [
     description: "A small vibecoded HTML logo generator using the Nothing fonts.",
   },
   {
-    name: "statusserver",
-    repo: "statusserver",
-    description: "Go agent feeding the live metrics on my status page.",
+    name: "SilentJoin",
+    repo: "SilentJoin",
+    description: "Truly the best paper plugin to hide and customize the join, leave and name-change messages.",
   },
   {
     name: "errors",
