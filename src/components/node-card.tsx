@@ -169,7 +169,7 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
           <Metric
             icon={HardDrive}
             label="Storage"
-            hint="Storage devices aren’t always detected or displayed correctly, e.g. RAID arrays, ZFS/btrfs pools or network shares."
+            hint="Storage devices aren’t always detected or displayed correctly."
           >
             {mounts.length ? (
               <Tooltip>
