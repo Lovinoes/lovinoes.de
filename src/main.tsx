@@ -15,9 +15,6 @@ window.addEventListener("hashchange", () => {
   window.dispatchEvent(new PopStateEvent("popstate")) // let the router pick up the new path
 })
 
-// The back button can restore the page from bfcache still faded out (see SiteHeader).
-window.addEventListener("pageshow", () => document.body.classList.remove("leaving"))
-
 restrictContextMenu()
 
 createRoot(document.getElementById("root")!).render(

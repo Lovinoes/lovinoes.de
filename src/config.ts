@@ -7,7 +7,6 @@ export const profile = {
   email: "lovinoes@lovinoes.de",
   githubUser: "Lovinoes",
   discordId: "904679820124880896",
-  mirrorUrl: "https://mirror.lovinoes.de/",
 }
 
 export const socials = {

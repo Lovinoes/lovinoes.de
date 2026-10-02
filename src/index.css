@@ -146,11 +146,3 @@
     -webkit-user-drag: none;
   }
 }
-
-/* Fade the page content out before leaving for another origin (Mirror link). */
-main {
-  transition: opacity 120ms ease;
-}
-body.leaving main {
-  opacity: 0;
-}
