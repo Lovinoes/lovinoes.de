@@ -2,13 +2,17 @@ import { useEffect } from "react"
 import { Route, Routes, useLocation } from "react-router"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
+import { serverError } from "@/lib/errors"
+import ErrorPage from "@/pages/error"
 import Home from "@/pages/home"
-import NotFound from "@/pages/not-found"
 import Projects from "@/pages/projects"
 import Status from "@/pages/status"
 
 export default function App() {
   const { pathname } = useLocation()
+  // nginx answered this URL with an error (403, 502, ...): show it there. Navigating
+  // elsewhere in the app works normally.
+  const errorCode = serverError && pathname === serverError.path ? serverError.code : null
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -23,12 +27,16 @@ export default function App() {
           key={pathname}
           className="flex flex-1 flex-col duration-700 ease-out animate-in fade-in slide-in-from-bottom-5 motion-reduce:animate-none"
         >
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/status" element={<Status />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          {errorCode ? (
+            <ErrorPage code={errorCode} />
+          ) : (
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/status" element={<Status />} />
+              <Route path="*" element={<ErrorPage code={404} />} />
+            </Routes>
+          )}
         </div>
       </main>
       <SiteFooter />

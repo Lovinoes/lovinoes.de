@@ -47,9 +47,21 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="[Lovinoes]" />
     <link rel="manifest" href="/favicons/site.webmanifest" />
+
+    <!-- nginx (ssi on) writes the response status in here, so the app can show the right
+         error page. Anywhere else it stays a comment and the app ignores it. -->
+    <meta name="lovinoes-status" content='<!--# echo var="status" default="" -->' />
+    <style>
+      /* Error fallback for when the app's JS can't load (e.g. rate limited). Hidden at
+         first, so it never flashes when the app renders normally. */
+      @keyframes lovinoes-show { to { visibility: visible; } }
+      #error-fallback { visibility: hidden; animation: lovinoes-show 0s 2s forwards; position: fixed; inset: 0; padding: 25vh 16px 0; background: #0a0a0a; color: #fafafa; font-family: system-ui, sans-serif; text-align: center; }
+      #error-fallback a { color: inherit; }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- The fallback markup lives inside SSI on purpose: without SSI it's only comments. -->
+    <div id="root"><!--# if expr="$status != 200" --><!--# set var="error_fallback" value="<div id='error-fallback'><h1>Error $status</h1><p><a href='/'>Back home</a></p></div>" --><!--# endif --><!--# echo var="error_fallback" encoding="none" default="" --></div>
     <noscript>This site needs JavaScript. Reach me at lovinoes@lovinoes.de.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
