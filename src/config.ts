@@ -97,4 +97,12 @@ export const nodes: NodeConfig[] = [
     cpuCores: "4 cores",
     memSpec: "10GB DDR4 @ 3200 MT/s",
   },
+  {
+    wsUrl: "/status/nodes/hde04/ws",
+    name: "HDE-04",
+    kind: "KVM QEMU Virtual machine",
+    cpuModel: "AMD EPYC™ 9754",
+    cpuCores: "4 cores",
+    memSpec: "8GB DDR5 @ 4800 MT/s",
+  },
 ]
