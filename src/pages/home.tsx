@@ -2,11 +2,13 @@ import { ArrowRight, Mail, Server, Star } from "lucide-react"
 import { Link } from "react-router"
 import { ActivityCard } from "@/components/activity-card"
 import { DiscordIcon, GithubIcon, XIcon } from "@/components/brand-icons"
+import { ErrorBoundary } from "@/components/error-boundary"
 import { PresenceDot } from "@/components/presence"
 import { ProjectCard } from "@/components/project-card"
 import { StatCard } from "@/components/stat-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { nodes, profile, projects, socials } from "@/config"
 import { useGithub } from "@/hooks/use-github"
@@ -124,7 +126,17 @@ export default function Home() {
       </section>
 
       <section className="pb-16">
-        <ActivityCard data={presence} loading={lanyard.loading} />
+        <ErrorBoundary
+          fallback={
+            <Card>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">Couldn’t show my activity right now.</p>
+              </CardContent>
+            </Card>
+          }
+        >
+          <ActivityCard data={presence} loading={lanyard.loading} />
+        </ErrorBoundary>
       </section>
 
       <section className="pb-8">

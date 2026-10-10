@@ -32,18 +32,24 @@ function Cover({ src, fallback }: { src: string | null; fallback: ReactNode }) {
   )
 }
 
+/** Outside data only becomes an image URL if it is a plain https:// address. */
+function httpsOnly(url: unknown) {
+  return typeof url === "string" && url.startsWith("https://") ? url : null
+}
+
 function Spotify({ spotify }: { spotify: NonNullable<LanyardData["spotify"]> }) {
   const now = useNow(1000)
-  const { start, end } = spotify.timestamps
-  const total = end - start
-  const elapsed = Math.min(Math.max(now - start, 0), total)
-  const song = (
-    <span className="truncate font-medium">{spotify.song}</span>
-  )
+  // Local files have no artist, cover or track id, and any field can be null.
+  const start = spotify.timestamps?.start
+  const end = spotify.timestamps?.end
+  const total = start != null && end != null ? end - start : 0
+  const elapsed = start != null ? Math.min(Math.max(now - start, 0), total) : 0
+  const byline = spotify.artist ? `by ${spotify.artist.replaceAll(";", ",")}` : spotify.album
+  const song = <span className="truncate font-medium">{spotify.song ?? "Unknown track"}</span>
 
   return (
     <div className="flex items-center gap-4">
-      <Cover src={spotify.album_art_url} fallback={<SpotifyIcon className="size-7 text-[#1DB954]" />} />
+      <Cover src={httpsOnly(spotify.album_art_url)} fallback={<SpotifyIcon className="size-7 text-[#1DB954]" />} />
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <SpotifyIcon className="size-3 text-[#1DB954]" /> Listening on Spotify
@@ -60,12 +66,14 @@ function Spotify({ spotify }: { spotify: NonNullable<LanyardData["spotify"]> }) 
         ) : (
           <p className="flex min-w-0">{song}</p>
         )}
-        <p className="truncate text-xs text-muted-foreground">by {spotify.artist.replaceAll(";", ",")}</p>
-        <div className="mt-1.5 flex items-center gap-2 font-data text-[0.7rem] text-muted-foreground tabular-nums">
-          <span>{fmtClock(elapsed)}</span>
-          <Progress value={total > 0 ? (elapsed / total) * 100 : 0} indicatorClassName="bg-[#1DB954]" />
-          <span>{fmtClock(total)}</span>
-        </div>
+        {byline && <p className="truncate text-xs text-muted-foreground">{byline}</p>}
+        {total > 0 && (
+          <div className="mt-1.5 flex items-center gap-2 font-data text-[0.7rem] text-muted-foreground tabular-nums">
+            <span>{fmtClock(elapsed)}</span>
+            <Progress value={(elapsed / total) * 100} indicatorClassName="bg-[#1DB954]" />
+            <span>{fmtClock(total)}</span>
+          </div>
+        )}
       </div>
     </div>
   )

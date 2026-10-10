@@ -22,7 +22,8 @@ const languageColor: Record<string, string> = {
 }
 
 export function ProjectCard({ project, repo }: { project: Project; repo?: GithubRepo }) {
-  const href = repo?.html_url ?? `https://github.com/${profile.githubUser}/${project.repo}`
+  // Built from my own config, never from what the API returns.
+  const href = `https://github.com/${profile.githubUser}/${encodeURIComponent(project.repo)}`
 
   return (
     <a href={href} target="_blank" rel="noreferrer" className="group rounded-xl outline-none">

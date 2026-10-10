@@ -27,13 +27,14 @@ export type LanyardActivity = {
   emoji?: { name: string }
 }
 
+// Everything is nullable: for local files Lanyard sends no artist, cover or track id.
 export type LanyardSpotify = {
   track_id: string | null
-  song: string
-  artist: string
-  album: string
+  song: string | null
+  artist: string | null
+  album: string | null
   album_art_url: string | null
-  timestamps: { start: number; end: number }
+  timestamps: { start?: number; end?: number } | null
 }
 
 export type LanyardData = {
