@@ -52,6 +52,31 @@ export type LanyardData = {
 
 const POLL_MS = 30_000
 
+/**
+ * Lanyard's payload comes from outside, so shape it once here: every component below can
+ * then trust the types instead of guarding each field.
+ */
+function normalize(raw: unknown, userId: string): LanyardData {
+  if (!raw || typeof raw !== "object") throw new Error("lanyard: no data")
+  const d = raw as Partial<LanyardData>
+  const user = d.discord_user
+  return {
+    discord_status:
+      typeof d.discord_status === "string" && Object.hasOwn(statusLabel, d.discord_status) ? d.discord_status : "offline",
+    discord_user: {
+      id: typeof user?.id === "string" ? user.id : userId,
+      username: typeof user?.username === "string" ? user.username : "",
+      global_name: typeof user?.global_name === "string" ? user.global_name : null,
+      avatar: typeof user?.avatar === "string" ? user.avatar : null,
+    },
+    activities: Array.isArray(d.activities)
+      ? d.activities.filter((a): a is LanyardActivity => !!a && typeof a.name === "string" && typeof a.type === "number")
+      : [],
+    listening_to_spotify: d.listening_to_spotify === true,
+    spotify: d.listening_to_spotify === true && d.spotify && typeof d.spotify === "object" ? d.spotify : null,
+  }
+}
+
 /** Discord presence via Lanyard (https://github.com/Phineas/lanyard), polled. */
 export function useLanyard(userId: string) {
   const [data, setData] = useState<LanyardData | null>(null)
@@ -72,8 +97,8 @@ export function useLanyard(userId: string) {
           signal: ctrl.signal,
         })
         const json = await res.json()
-        if (!json.success) throw new Error("lanyard")
-        setData(json.data)
+        if (!json?.success) throw new Error("lanyard")
+        setData(normalize(json.data, userId))
         setError(false)
       } catch {
         if (ctrl.signal.aborted) return

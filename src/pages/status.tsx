@@ -1,5 +1,7 @@
-import { Badge } from "@/components/ui/badge"
+import { ErrorBoundary } from "@/components/error-boundary"
 import { NodeCard } from "@/components/node-card"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
 import { nodes } from "@/config"
 import { useNodeStatus } from "@/hooks/use-node-status"
 import { useNow } from "@/hooks/use-now"
@@ -52,7 +54,19 @@ export default function Status() {
 
       <div className="flex flex-col gap-4">
         {nodes.map((node, i) => (
-          <NodeCard key={node.wsUrl} node={node} state={states[i]} />
+          // one malformed frame from one agent only takes out that node's card
+          <ErrorBoundary
+            key={node.wsUrl}
+            fallback={
+              <Card>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">Couldn’t show {node.name} right now.</p>
+                </CardContent>
+              </Card>
+            }
+          >
+            <NodeCard node={node} state={states[i]} />
+          </ErrorBoundary>
         ))}
       </div>
     </>

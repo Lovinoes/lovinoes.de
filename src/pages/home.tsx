@@ -96,7 +96,7 @@ export default function Home() {
           value={presence ? statusLabel[presence.discord_status] : "—"}
           sub={
             customStatus?.state ??
-            (presence ? `@${presence.discord_user.username}` : "presence unavailable")
+            (presence?.discord_user.username ? `@${presence.discord_user.username}` : "presence unavailable")
           }
         />
         <StatCard

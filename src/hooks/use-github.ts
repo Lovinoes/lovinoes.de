@@ -26,7 +26,8 @@ function readCache(key: string): GithubData | null {
     const raw = sessionStorage.getItem(key)
     if (!raw) return null
     const { at, data } = JSON.parse(raw)
-    return Date.now() - at < TTL ? data : null
+    // an old or corrupted entry must not reach the components
+    return Date.now() - at < TTL && Array.isArray(data?.repos) ? data : null
   } catch {
     return null
   }
@@ -61,6 +62,7 @@ export function useGithub(user: string) {
       }),
     ])
       .then(([u, repos]: [{ public_repos: number; followers: number }, GithubRepo[]]) => {
+        if (!Array.isArray(repos)) throw new Error("github: unexpected repos response")
         const next = { publicRepos: u.public_repos, followers: u.followers, repos }
         writeCache(key, next)
         setData(next)

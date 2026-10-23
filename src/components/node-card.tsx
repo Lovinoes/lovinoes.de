@@ -91,6 +91,8 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
   const cpu = metrics?.cpu
   const cpuPct = num(cpu?.usage_percent)
   const temp = num(cpu?.temperature_c)
+  const load = cpu?.load ? [cpu.load.load1, cpu.load.load5, cpu.load.load15].map(num) : null
+  const loadText = load?.every((l) => l != null) ? `load ${load.map((l) => l!.toFixed(2)).join(" ")}` : null
   // Config wins (hand-written, nicer names); newer agents fill in the rest.
   const cpuModel = node.cpuModel ?? (cpu?.model || null)
   const cpuCores = node.cpuCores ?? (cpu?.cores ? `${cpu.cores} threads` : null)
@@ -99,11 +101,13 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
   const os = [host?.platform, host?.platform_version].filter(Boolean).join(" ")
   const hostInfo = [os, host?.arch].filter(Boolean).join(" · ")
 
-  const mem = metrics?.memory
+  // Agent data comes from outside: anything of the wrong type is treated as missing.
+  const mem = metrics?.memory && typeof metrics.memory === "object" ? metrics.memory : null
+  const interfaces = Array.isArray(metrics?.network) ? metrics.network : []
   const memPct = num(mem?.used_percent)
 
   // All mounts aggregated into one bar: total used across all of them.
-  const mounts = metrics?.storage ?? []
+  const mounts = Array.isArray(metrics?.storage) ? metrics.storage : []
   const used = mounts.reduce((n, s) => n + (Number(s.used_bytes) || 0), 0)
   const total = mounts.reduce((n, s) => n + (Number(s.total_bytes) || 0), 0)
   const storagePct = total ? (used / total) * 100 : null
@@ -143,16 +147,8 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
             {cpuModel && <p className="text-foreground">{cpuModel}</p>}
             {cpuCores && <p>{cpuCores}</p>}
             <Bar pct={cpuPct} digits={1} />
-            {(temp != null || cpu?.load) && (
-              <p>
-                {[
-                  temp != null && `${temp.toFixed(1)}°C`,
-                  cpu?.load &&
-                    `load ${[cpu.load.load1, cpu.load.load5, cpu.load.load15].map((l) => l.toFixed(2)).join(" ")}`,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </p>
+            {(temp != null || loadText) && (
+              <p>{[temp != null && `${temp.toFixed(1)}°C`, loadText].filter(Boolean).join(" · ")}</p>
             )}
           </Metric>
 
@@ -203,8 +199,8 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
           </Metric>
 
           <Metric icon={Network} label="Network">
-            {metrics?.network?.length ? (
-              metrics.network.map((n) => {
+            {interfaces.length ? (
+              interfaces.map((n) => {
                 const link = linkUsage(n)
                 return (
                   <div key={n.interface} className="flex flex-col gap-0.5">

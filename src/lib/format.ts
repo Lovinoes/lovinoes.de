@@ -49,5 +49,3 @@ export function fmtRelative(date: string | number | Date, now = Date.now()): str
   }
   return "just now"
 }
-
-export const compact = new Intl.NumberFormat("en", { notation: "compact" })
