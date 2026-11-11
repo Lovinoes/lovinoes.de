@@ -4,14 +4,14 @@ import { ActivityCard } from "@/components/activity-card"
 import { DiscordIcon, GithubIcon, XIcon } from "@/components/brand-icons"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { PresenceDot } from "@/components/presence"
-import { ProjectCard } from "@/components/project-card"
+import { GithubUnavailable, ProjectCard, ProjectCardSkeleton } from "@/components/project-card"
 import { StatCard } from "@/components/stat-card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { nodes, profile, projects, socials } from "@/config"
-import { useGithub } from "@/hooks/use-github"
+import { nodes, profile, socials } from "@/config"
+import { featuredRepos, useGithub } from "@/hooks/use-github"
 import { discordAvatarUrl, statusLabel, useLanyard } from "@/hooks/use-lanyard"
 import { useTitle } from "@/hooks/use-title"
 
@@ -25,7 +25,7 @@ export default function Home() {
   const presence = lanyard.data
   const avatar = presence ? discordAvatarUrl(presence.discord_user) : null
   const customStatus = presence?.activities.find((a) => a.type === 4)
-  const repoByName = new Map(github.data?.repos.map((r) => [r.name.toLowerCase(), r]))
+  const featured = github.data ? featuredRepos(github.data.repos, FEATURED) : []
   const stars = github.data?.repos.filter((r) => !r.fork).reduce((n, r) => n + r.stargazers_count, 0)
 
   return (
@@ -105,7 +105,13 @@ export default function Home() {
           href={`${socials.github}?tab=repositories`}
           loading={github.loading}
           value={github.data?.publicRepos ?? "—"}
-          sub={github.data ? `${github.data.followers} followers` : "GitHub unavailable"}
+          sub={
+            github.data
+              ? github.data.followers != null
+                ? `${github.data.followers} followers`
+                : "public on GitHub"
+              : "GitHub unavailable"
+          }
         />
         <StatCard
           title="Stars"
@@ -148,11 +154,15 @@ export default function Home() {
             </Link>
           </Button>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {projects.slice(0, FEATURED).map((p) => (
-            <ProjectCard key={p.repo} project={p} repo={repoByName.get(p.repo.toLowerCase())} />
-          ))}
-        </div>
+        {github.error ? (
+          <GithubUnavailable what="my projects" />
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2" aria-busy={github.loading}>
+            {github.loading
+              ? Array.from({ length: FEATURED }, (_, i) => <ProjectCardSkeleton key={i} />)
+              : featured.map((r) => <ProjectCard key={r.name} repo={r} />)}
+          </div>
+        )}
       </section>
     </>
   )

@@ -5,7 +5,7 @@ My personal website, built with React, Vite, Tailwind CSS and [shadcn/ui](https:
 ## Pages
 
 - `/` – about me, Discord activity and GitHub stats
-- `/projects` – my projects
+- `/projects` – all my public GitHub repositories and organizations, fetched live
 - `/status` – live server metrics from [statusserver](https://github.com/Lovinoes/statusserver)
 
 ## Development
@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-All content (text, links, projects, servers) lives in [`src/config.ts`](src/config.ts).
+All content (text, links, servers) lives in [`src/config.ts`](src/config.ts).
 
 ## Hosting
 
