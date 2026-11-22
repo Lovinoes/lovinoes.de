@@ -167,6 +167,7 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
             label="Storage"
             hint="Storage devices aren’t always detected or displayed correctly."
           >
+            {node.storageSpec && <p className="text-foreground">{node.storageSpec}</p>}
             {mounts.length ? (
               <Tooltip>
                 <TooltipTrigger asChild>

@@ -29,6 +29,8 @@ export type NodeConfig = {
   /** Leave out to use the agent's logical core count. */
   cpuCores?: string
   memSpec?: string
+  /** The agent only sees the combined volume, so things like RAID go here. */
+  storageSpec?: string
 }
 
 // To add a node, copy an entry and change the values.
@@ -36,14 +38,15 @@ export const nodes: NodeConfig[] = [
   {
     wsUrl: "/status/nodes/hde01/ws",
     name: "HDE-01",
-    kind: "Raspberry Pi CM5",
-    cpuModel: "Broadcom BCM2712",
-    cpuCores: "4 cores",
-    memSpec: "16GB LPDDR4X @ 4267 MT/s",
+    kind: "Dedicated Server",
+    cpuModel: "AMD Ryzen™ 7 PRO 8700GE",
+    cpuCores: "8 cores / 16 threads",
+    memSpec: "64GB DDR5 @ 5600 MT/s",
+    storageSpec: "RAID 1",
   },
   {
-    wsUrl: "/status/nodes/hde03/ws",
-    name: "HDE-03",
+    wsUrl: "/status/nodes/hde02/ws",
+    name: "HDE-02",
     kind: "KVM QEMU Virtual machine",
     cpuModel: "AMD EPYC™ 7443P",
     cpuCores: "4 cores",
