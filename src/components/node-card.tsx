@@ -32,6 +32,9 @@ function num(v: unknown): number | null {
 }
 
 const data = "flex min-w-0 flex-col gap-1.5 font-data text-xs text-muted-foreground tabular-nums"
+/** Text that has a tooltip: dotted underline, focusable. */
+const hoverText =
+  "w-fit cursor-help text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
 
 /**
  * Each metric spans the same four rows of the parent grid (label, info, bar, details), so
@@ -206,14 +209,23 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
             hint="Storage devices aren’t always detected or displayed correctly."
             info={
               <>
-                {node.storageSpec && <p className="text-foreground">{node.storageSpec}</p>}
+                {node.storageSpec &&
+                  (node.storageSpecHint ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <p tabIndex={0} className={hoverText}>
+                          {node.storageSpec}
+                        </p>
+                      </TooltipTrigger>
+                      <TooltipContent>{node.storageSpecHint}</TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <p className="text-foreground">{node.storageSpec}</p>
+                  ))}
                 {mounts.length ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p
-                        tabIndex={0}
-                        className="w-fit cursor-help text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
+                      <p tabIndex={0} className={hoverText}>
                         {mounts.length} {mounts.length === 1 ? "mount" : "mounts"}
                       </p>
                     </TooltipTrigger>

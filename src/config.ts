@@ -33,6 +33,8 @@ export type NodeConfig = {
   memEcc?: string
   /** The agent only sees the combined volume, so things like RAID go here. */
   storageSpec?: string
+  /** Shown when hovering storageSpec, e.g. to say the RAID is on the VM's host. */
+  storageSpecHint?: string
 }
 
 // To add a node, copy an entry and change the values.
@@ -55,5 +57,7 @@ export const nodes: NodeConfig[] = [
     cpuCores: "4 cores",
     memSpec: "10GB DDR4 @ 3200 MT/s",
     memEcc: "ECC",
+    storageSpec: "RAID 1",
+    storageSpecHint: "Host-side",
   },
 ]
