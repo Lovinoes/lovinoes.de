@@ -31,20 +31,30 @@ function num(v: unknown): number | null {
   return v == null || Number.isNaN(Number(v)) ? null : Number(v)
 }
 
+const data = "flex min-w-0 flex-col gap-1.5 font-data text-xs text-muted-foreground tabular-nums"
+
+/**
+ * Each metric spans the same four rows of the parent grid (label, info, bar, details), so
+ * every bar lines up with its neighbours no matter how many info lines a column has.
+ */
 function Metric({
   icon: Icon,
   label,
   hint,
-  children,
+  info,
+  bar,
+  details,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
   /** Extra info, shown on hover/focus of an icon next to the label. */
   hint?: string
-  children: ReactNode
+  info: ReactNode
+  bar?: ReactNode
+  details?: ReactNode
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-2">
+    <div className="row-span-4 grid min-w-0 grid-rows-subgrid gap-2">
       <div className="flex items-center gap-1.5 text-sm font-medium">
         <Icon className="size-4 text-muted-foreground" />
         {label}
@@ -63,7 +73,9 @@ function Metric({
           </Tooltip>
         )}
       </div>
-      <div className="flex flex-col gap-1.5 font-data text-xs text-muted-foreground tabular-nums">{children}</div>
+      <div className={data}>{info}</div>
+      <div className={data}>{bar}</div>
+      <div className={data}>{details}</div>
     </div>
   )
 }
@@ -75,6 +87,17 @@ function Bar({ pct, digits }: { pct: number | null; digits: number }) {
       {/* fixed width so the bar doesn't jitter as the number changes */}
       <span className="w-12 shrink-0 text-right text-foreground">{pct == null ? "—" : `${pct.toFixed(digits)}%`}</span>
     </div>
+  )
+}
+
+type Interface = { interface: string; max_mbps?: number }
+
+function InterfaceName({ n }: { n: Interface }) {
+  return (
+    <p className="text-foreground">
+      {n.interface}
+      {n.max_mbps ? <span className="text-muted-foreground"> · {fmtLink(n.max_mbps)}</span> : null}
+    </p>
   )
 }
 
@@ -143,82 +166,94 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
           </p>
         )}
         <div className={cn("grid gap-5 transition-opacity sm:grid-cols-2 lg:grid-cols-4", offline && "opacity-50")}>
-          <Metric icon={Cpu} label="CPU">
-            {cpuModel && <p className="text-foreground">{cpuModel}</p>}
-            {cpuCores && <p>{cpuCores}</p>}
-            <Bar pct={cpuPct} digits={1} />
-            {(temp != null || loadText) && (
-              <p>{[temp != null && `${temp.toFixed(1)}°C`, loadText].filter(Boolean).join(" · ")}</p>
-            )}
-          </Metric>
+          <Metric
+            icon={Cpu}
+            label="CPU"
+            info={
+              <>
+                {cpuModel && <p className="text-foreground">{cpuModel}</p>}
+                {cpuCores && <p>{cpuCores}</p>}
+              </>
+            }
+            bar={<Bar pct={cpuPct} digits={1} />}
+            details={
+              (temp != null || loadText) && (
+                <p>{[temp != null && `${temp.toFixed(1)}°C`, loadText].filter(Boolean).join(" · ")}</p>
+              )
+            }
+          />
 
-          <Metric icon={MemoryStick} label="Memory">
-            {node.memSpec && <p className="text-foreground">{node.memSpec}</p>}
-            <Bar pct={memPct} digits={1} />
-            {mem && (
-              <p>
-                {mem.used_human ?? fmtBytes(mem.used_bytes)} / {mem.total_human ?? fmtBytes(mem.total_bytes)}
-              </p>
-            )}
-          </Metric>
+          <Metric
+            icon={MemoryStick}
+            label="Memory"
+            info={node.memSpec && <p className="text-foreground">{node.memSpec}</p>}
+            bar={<Bar pct={memPct} digits={1} />}
+            details={
+              mem && (
+                <p>
+                  {mem.used_human ?? fmtBytes(mem.used_bytes)} / {mem.total_human ?? fmtBytes(mem.total_bytes)}
+                </p>
+              )
+            }
+          />
 
           <Metric
             icon={HardDrive}
             label="Storage"
             hint="Storage devices aren’t always detected or displayed correctly."
-          >
-            {node.storageSpec && <p className="text-foreground">{node.storageSpec}</p>}
-            {mounts.length ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <p
-                    tabIndex={0}
-                    className="w-fit cursor-help text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                  >
-                    {mounts.length} {mounts.length === 1 ? "mount" : "mounts"}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="flex-col items-start gap-0.5 font-data tabular-nums">
-                  {mounts.map((m) => (
-                    <span key={m.mount}>
-                      <span className="font-medium">{m.mount}</span> · {m.used_human ?? fmtBytes(m.used_bytes)} /{" "}
-                      {m.total_human ?? fmtBytes(m.total_bytes)}
-                      {m.fstype && <span className="opacity-60"> ({m.fstype})</span>}
-                    </span>
-                  ))}
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <p className="text-foreground">—</p>
-            )}
-            <Bar pct={storagePct} digits={0} />
-            {total > 0 && (
-              <p>
-                {fmtBytes(used)} / {fmtBytes(total)}
-              </p>
-            )}
-          </Metric>
+            info={
+              <>
+                {node.storageSpec && <p className="text-foreground">{node.storageSpec}</p>}
+                {mounts.length ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p
+                        tabIndex={0}
+                        className="w-fit cursor-help text-foreground underline decoration-muted-foreground/50 decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        {mounts.length} {mounts.length === 1 ? "mount" : "mounts"}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="flex-col items-start gap-0.5 font-data tabular-nums">
+                      {mounts.map((m) => (
+                        <span key={m.mount}>
+                          <span className="font-medium">{m.mount}</span> · {m.used_human ?? fmtBytes(m.used_bytes)} /{" "}
+                          {m.total_human ?? fmtBytes(m.total_bytes)}
+                          {m.fstype && <span className="opacity-60"> ({m.fstype})</span>}
+                        </span>
+                      ))}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <p className="text-foreground">—</p>
+                )}
+              </>
+            }
+            bar={<Bar pct={storagePct} digits={0} />}
+            details={
+              total > 0 && (
+                <p>
+                  {fmtBytes(used)} / {fmtBytes(total)}
+                </p>
+              )
+            }
+          />
 
-          <Metric icon={Network} label="Network">
-            {interfaces.length ? (
-              interfaces.map((n) => {
-                const link = linkUsage(n)
-                return (
-                  <div key={n.interface} className="flex flex-col gap-0.5">
-                    <p className="text-foreground">
-                      {n.interface}
-                      {n.max_mbps ? <span className="text-muted-foreground"> · {fmtLink(n.max_mbps)}</span> : null}
-                    </p>
-                    {link != null && <Bar pct={link} digits={1} />}
-                    <p>↑ {n.tx_human ?? fmtRate(n.tx_bytes_per_sec)}</p>
-                    <p>↓ {n.rx_human ?? fmtRate(n.rx_bytes_per_sec)}</p>
-                  </div>
-                )
-              })
-            ) : (
-              <p>—</p>
-            )}
-          </Metric>
+          <Metric
+            icon={Network}
+            label="Network"
+            info={interfaces.length ? <InterfaceName n={interfaces[0]} /> : <p>—</p>}
+            bar={interfaces.length > 0 && linkUsage(interfaces[0]) != null && <Bar pct={linkUsage(interfaces[0])} digits={1} />}
+            details={interfaces.map((n, i) => (
+              // the first interface's name and bar sit in the rows above, so the bars line up
+              <div key={n.interface} className="flex flex-col gap-0.5">
+                {i > 0 && <InterfaceName n={n} />}
+                {i > 0 && linkUsage(n) != null && <Bar pct={linkUsage(n)} digits={1} />}
+                <p>↑ {n.tx_human ?? fmtRate(n.tx_bytes_per_sec)}</p>
+                <p>↓ {n.rx_human ?? fmtRate(n.rx_bytes_per_sec)}</p>
+              </div>
+            ))}
+          />
         </div>
       </CardContent>
 
