@@ -36,6 +36,7 @@ const data = "flex min-w-0 flex-col gap-1.5 font-data text-xs text-muted-foregro
 /**
  * Each metric spans the same four rows of the parent grid (label, info, bar, details), so
  * every bar lines up with its neighbours no matter how many info lines a column has.
+ * Passing `children` instead stacks them freely under the label, outside that alignment.
  */
 function Metric({
   icon: Icon,
@@ -44,17 +45,19 @@ function Metric({
   info,
   bar,
   details,
+  children,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
   /** Extra info, shown on hover/focus of an icon next to the label. */
   hint?: string
-  info: ReactNode
+  info?: ReactNode
   bar?: ReactNode
   details?: ReactNode
+  children?: ReactNode
 }) {
   return (
-    <div className="row-span-4 grid min-w-0 grid-rows-subgrid gap-2">
+    <div className={cn("row-span-4 min-w-0 gap-2", children ? "flex flex-col" : "grid grid-rows-subgrid")}>
       <div className="flex items-center gap-1.5 text-sm font-medium">
         <Icon className="size-4 text-muted-foreground" />
         {label}
@@ -73,9 +76,15 @@ function Metric({
           </Tooltip>
         )}
       </div>
-      <div className={data}>{info}</div>
-      <div className={data}>{bar}</div>
-      <div className={data}>{details}</div>
+      {children ? (
+        <div className={data}>{children}</div>
+      ) : (
+        <>
+          <div className={data}>{info}</div>
+          <div className={data}>{bar}</div>
+          <div className={data}>{details}</div>
+        </>
+      )}
     </div>
   )
 }
@@ -87,17 +96,6 @@ function Bar({ pct, digits }: { pct: number | null; digits: number }) {
       {/* fixed width so the bar doesn't jitter as the number changes */}
       <span className="w-12 shrink-0 text-right text-foreground">{pct == null ? "—" : `${pct.toFixed(digits)}%`}</span>
     </div>
-  )
-}
-
-type Interface = { interface: string; max_mbps?: number }
-
-function InterfaceName({ n }: { n: Interface }) {
-  return (
-    <p className="text-foreground">
-      {n.interface}
-      {n.max_mbps ? <span className="text-muted-foreground"> · {fmtLink(n.max_mbps)}</span> : null}
-    </p>
   )
 }
 
@@ -186,7 +184,12 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
           <Metric
             icon={MemoryStick}
             label="Memory"
-            info={node.memSpec && <p className="text-foreground">{node.memSpec}</p>}
+            info={
+              <>
+                {node.memSpec && <p className="text-foreground">{node.memSpec}</p>}
+                {node.memEcc && <p>{node.memEcc}</p>}
+              </>
+            }
             bar={<Bar pct={memPct} digits={1} />}
             details={
               mem && (
@@ -239,21 +242,26 @@ export function NodeCard({ node, state }: { node: NodeConfig; state: NodeState }
             }
           />
 
-          <Metric
-            icon={Network}
-            label="Network"
-            info={interfaces.length ? <InterfaceName n={interfaces[0]} /> : <p>—</p>}
-            bar={interfaces.length > 0 && linkUsage(interfaces[0]) != null && <Bar pct={linkUsage(interfaces[0])} digits={1} />}
-            details={interfaces.map((n, i) => (
-              // the first interface's name and bar sit in the rows above, so the bars line up
-              <div key={n.interface} className="flex flex-col gap-0.5">
-                {i > 0 && <InterfaceName n={n} />}
-                {i > 0 && linkUsage(n) != null && <Bar pct={linkUsage(n)} digits={1} />}
-                <p>↑ {n.tx_human ?? fmtRate(n.tx_bytes_per_sec)}</p>
-                <p>↓ {n.rx_human ?? fmtRate(n.rx_bytes_per_sec)}</p>
-              </div>
-            ))}
-          />
+          <Metric icon={Network} label="Network">
+            {interfaces.length ? (
+              interfaces.map((n) => {
+                const link = linkUsage(n)
+                return (
+                  <div key={n.interface} className="flex flex-col gap-0.5">
+                    <p className="text-foreground">
+                      {n.interface}
+                      {n.max_mbps ? <span className="text-muted-foreground"> · {fmtLink(n.max_mbps)}</span> : null}
+                    </p>
+                    {link != null && <Bar pct={link} digits={1} />}
+                    <p>↑ {n.tx_human ?? fmtRate(n.tx_bytes_per_sec)}</p>
+                    <p>↓ {n.rx_human ?? fmtRate(n.rx_bytes_per_sec)}</p>
+                  </div>
+                )
+              })
+            ) : (
+              <p>—</p>
+            )}
+          </Metric>
         </div>
       </CardContent>
 

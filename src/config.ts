@@ -29,6 +29,8 @@ export type NodeConfig = {
   /** Leave out to use the agent's logical core count. */
   cpuCores?: string
   memSpec?: string
+  /** Shown as a second line under memSpec, e.g. "ECC". */
+  memEcc?: string
   /** The agent only sees the combined volume, so things like RAID go here. */
   storageSpec?: string
 }
@@ -42,6 +44,7 @@ export const nodes: NodeConfig[] = [
     cpuModel: "AMD Ryzen™ 7 PRO 8700GE",
     cpuCores: "8 cores / 16 threads",
     memSpec: "64GB DDR5 @ 5600 MT/s",
+    memEcc: "ODECC",
     storageSpec: "RAID 1",
   },
   {
@@ -51,5 +54,6 @@ export const nodes: NodeConfig[] = [
     cpuModel: "AMD EPYC™ 7443P",
     cpuCores: "4 cores",
     memSpec: "10GB DDR4 @ 3200 MT/s",
+    memEcc: "ECC",
   },
 ]
